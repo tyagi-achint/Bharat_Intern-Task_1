@@ -169,11 +169,17 @@ button:hover:after {
   }
 }
 
+#blogs .expand img {
+  height: 400px !important;
+}
+
 .expand {
   margin: 0 !important;
   width: 92%;
   height: 100vh;
   position: fixed;
+  overflow-y: scroll;
+  overflow-x: scroll;
   top: -1%;
   left: 3%;
   bottom: 0;
@@ -195,4 +201,18 @@ button:hover:after {
   z-index: 1000;
   cursor: pointer;
   font-size: xx-large;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: grey;
 }
