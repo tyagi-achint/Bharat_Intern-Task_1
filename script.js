@@ -1,4 +1,5 @@
 let form = document.querySelector("form");
+let blogs = document.querySelector("#blogs");
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -10,6 +11,14 @@ form.addEventListener("submit", (e) => {
 
   content = content.replace(/\n/g, "<br>");
 
+  let blogContainer = createBlogContainer(title, publisher, content, image);
+  blogs.appendChild(blogContainer);
+
+  form.reset();
+  saveData();
+});
+
+function createBlogContainer(title, publisher, content, image) {
   let blogContainer = document.createElement("div");
   let blogTitle = document.createElement("h2");
   let blogPublisher = document.createElement("h4");
@@ -30,8 +39,6 @@ form.addEventListener("submit", (e) => {
   blogContainer.appendChild(blogContent);
   blogContainer.appendChild(blogPublisher);
   blogContainer.appendChild(deleteButton);
-
-  let blogs = document.querySelector("#blogs");
 
   let icon = document.querySelector("span.material-symbols-outlined");
   let activeCard = null;
@@ -63,9 +70,58 @@ form.addEventListener("submit", (e) => {
   function deleteBlog() {
     blogs.removeChild(blogContainer);
     icon.classList.remove("cut-icon");
+    saveData();
   }
 
-  blogs.appendChild(blogContainer);
+  return blogContainer;
+}
 
-  form.reset();
-});
+function saveData() {
+  localStorage.setItem("blogs", blogs.innerHTML);
+}
+
+function getData() {
+  blogs.innerHTML = localStorage.getItem("blogs");
+  attachEventListenersToBlogs();
+}
+
+function attachEventListenersToBlogs() {
+  let blogContainers = blogs.querySelectorAll("div");
+  blogContainers.forEach((blogContainer) => {
+    let deleteButton = blogContainer.querySelector("button");
+    let blogContent = blogContainer.querySelector("p");
+    let icon = document.querySelector("span.material-symbols-outlined");
+    let activeCard = null;
+
+    blogContainer.addEventListener("click", view);
+    deleteButton.addEventListener("click", deleteBlog);
+    icon.addEventListener("click", noview);
+
+    function view() {
+      if (activeCard !== null) {
+        activeCard.classList.remove("expand");
+        blogContent.classList.toggle("notexpand");
+      }
+      this.classList.add("expand");
+      blogContent.classList.toggle("notexpand");
+      icon.classList.add("cut-icon");
+      activeCard = this;
+    }
+    function noview() {
+      if (activeCard !== null) {
+        activeCard.classList.remove("expand");
+        blogContent.classList.toggle("notexpand");
+        activeCard = null;
+      }
+      icon.classList.remove("cut-icon");
+    }
+
+    function deleteBlog() {
+      blogs.removeChild(blogContainer);
+      icon.classList.remove("cut-icon");
+      saveData();
+    }
+  });
+}
+
+window.addEventListener("load", getData);
